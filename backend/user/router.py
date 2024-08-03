@@ -3,7 +3,7 @@ import base64
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, HTTPException, Depends
 
-from .scemas import UserRegister, UserAuthtorize, TokenReturn
+from .scemas import UserRegister, UserAuthtorize
 from .models import User
 from .auth import get_current_user
 from .relscemas import UserRel
@@ -14,7 +14,7 @@ router = APIRouter(prefix="/user", tags=["user"])
 
 
 @router.post("/registration/")
-async def register_user(user_reg: UserRegister, session: AsyncSession = Depends(get_session)) -> dict[str: str]:
+async def register_user(user_reg: UserRegister, session: AsyncSession = Depends(get_session)) -> dict:
     if await session.scalar(User.get_by_mail(user_reg.mail)):
         raise HTTPException(401)
 
@@ -27,11 +27,11 @@ async def register_user(user_reg: UserRegister, session: AsyncSession = Depends(
     except Exception as e:
         raise HTTPException(403)
 
-    return { 'token': str(base64.b64encode(str(user.id).encode())) }
+    return { 'token': base64.b64encode(str(user.id).encode()).decode() }
 
 
 @router.post("/login/")
-async def login_user(user_log: UserAuthtorize, session: AsyncSession = Depends(get_session)) -> dict[str: str]:
+async def login_user(user_log: UserAuthtorize, session: AsyncSession = Depends(get_session)) -> dict:
     user = await session.scalar(User.get_by_mail(user_log.mail))
 
     if not user:
@@ -39,7 +39,7 @@ async def login_user(user_log: UserAuthtorize, session: AsyncSession = Depends(g
     if user.password != user_log.password:
         raise HTTPException(401)
 
-    return { 'token': str(base64.b64encode(str(user.id).encode())) }
+    return { 'token': base64.b64encode(str(user.id).encode()).decode() }
 
 
 @router.get("/")

@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, select, Select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..db.database import Base
@@ -23,3 +23,8 @@ class Tutorial(Base, CRUD):
                                                      cascade="all, delete-orphan")
     tags: Mapped[list['Tag']] = relationship(back_populates="source", lazy="selectin",
                                              cascade="all, delete-orphan")
+
+    @classmethod
+    def get_all_tutorials(cls):
+        query = (select(cls))
+        return query

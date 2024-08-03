@@ -106,7 +106,5 @@ async def get_module(module_id: int, user: User = Depends(get_current_user),
 
     if not module:
         raise HTTPException(404)
-    if module.source.creator_id != user.id:
-        raise HTTPException(401)
 
     return ModuleRel.model_validate(module, from_attributes=True)

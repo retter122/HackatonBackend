@@ -79,7 +79,13 @@ async def get_tutorial(tutorial_id: int, user: User = Depends(get_current_user),
 
     if not tutorial:
         raise HTTPException(404)
-    if tutorial.creator_id != user.id:
-        raise HTTPException(401)
 
     return TutorialRel.model_validate(tutorial, from_attributes=True)
+
+
+@router.get('/all')
+async def get_all_tutors(user: User = Depends(get_current_user),
+                         session: AsyncSession = Depends(get_session)):
+    tutorials_ret = await session.scalars(Tutorial.get_all_tutorials())
+
+    return [TutorialRel.model_validate(tutorial, from_attributes=True) for tutorial in tutorials_ret]
