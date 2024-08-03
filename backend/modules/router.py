@@ -9,6 +9,7 @@ from .filesystem import create_document, write_to_document, delete_document
 from ..user.models import User
 from ..user.auth import get_current_user
 from ..db.depencies import get_session
+from ..tutorial.models import Tutorial
 
 router = APIRouter(prefix="/modules", tags=["modules"])
 
@@ -20,6 +21,8 @@ async def delete_module(module_id: int, user: User = Depends(get_current_user),
 
     if not module:
         raise HTTPException(404)
+    if module.source.creator_id != user.id:
+        raise HTTPException(401)
 
     delete_document(module.document)
 
@@ -38,6 +41,13 @@ async def delete_module(module_id: int, user: User = Depends(get_current_user),
 @router.post("/")
 async def create_module(module_new: ModuleCreate, user: User = Depends(get_current_user),
                         session: AsyncSession = Depends(get_session)) -> ModuleRead:
+    tutorial = await session.scalar(Tutorial.get_by_id(module_new.source_id))
+
+    if not tutorial:
+        raise HTTPException(404)
+    if tutorial.creator_id != user.id:
+        raise HTTPException(401)
+
     document = create_document(user.id)
 
     module = Module(name=module_new.name, description=module_new.description, document=document,
@@ -60,6 +70,8 @@ async def upload_document(module_id: int, document: UploadFile = File(), user: U
 
     if not module:
         raise HTTPException(404)
+    if module.source.creator_id != user.id:
+        raise HTTPException(401)
 
     write_to_document(module.document, await document.read())
 
@@ -73,6 +85,8 @@ async def edit_document(module_edit: ModuleEdit, user: User = Depends(get_curren
 
     if not module:
         raise HTTPException(404)
+    if module.source.creator_id != user.id:
+        raise HTTPException(401)
 
     try:
         module.name = module_edit.name
@@ -92,5 +106,7 @@ async def get_module(module_id: int, user: User = Depends(get_current_user),
 
     if not module:
         raise HTTPException(404)
+    if module.source.creator_id != user.id:
+        raise HTTPException(401)
 
     return ModuleRel.model_validate(module, from_attributes=True)
