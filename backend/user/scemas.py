@@ -16,8 +16,13 @@ class UserAuthtorize(UserBase):
     mail: str
 
 
+class UserEdit(UserBase):
+    description: str
+
+
 class UserRead(UserBase):
     id: int
 
     name: str
     mail: str
+    description: str

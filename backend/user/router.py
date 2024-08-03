@@ -3,7 +3,7 @@ import base64
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, HTTPException, Depends
 
-from .scemas import UserRegister, UserAuthtorize
+from .scemas import UserRegister, UserAuthtorize, UserEdit, UserRead
 from .models import User
 from .auth import get_current_user
 from .relscemas import UserRel
@@ -18,7 +18,7 @@ async def register_user(user_reg: UserRegister, session: AsyncSession = Depends(
     if await session.scalar(User.get_by_mail(user_reg.mail)):
         raise HTTPException(401)
 
-    user = User(name=user_reg.name, password=user_reg.password, mail=user_reg.mail)
+    user = User(name=user_reg.name, password=user_reg.password, mail=user_reg.mail, description="")
 
     try:
         session.add(user)
@@ -40,6 +40,19 @@ async def login_user(user_log: UserAuthtorize, session: AsyncSession = Depends(g
         raise HTTPException(401)
 
     return { 'token': base64.b64encode(str(user.id).encode()).decode() }
+
+
+@router.put('/')
+async def add_descrtiption(user_edit: UserEdit, user: User = Depends(get_current_user),
+                           session: AsyncSession = Depends(get_session)) -> UserRead:
+    try:
+        user.description = user_edit.description
+
+        await session.commit()
+    except Exception as e:
+        raise HTTPException(403)
+
+    return UserRead.model_validate(user, from_attributes=True)
 
 
 @router.get("/")

@@ -14,6 +14,7 @@ class User(Base, CRUD):
     name: Mapped[str]
     password: Mapped[str]
     mail: Mapped[str]
+    description: Mapped[str]
 
     tutorials: Mapped[list['Tutorial']] = relationship(back_populates='creator', lazy='selectin',
                                                        cascade='all, delete-orphan')
