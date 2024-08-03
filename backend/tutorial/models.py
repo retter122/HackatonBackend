@@ -21,3 +21,5 @@ class Tutorial(Base, CRUD):
                                                    cascade='all, delete-orphan')
     comments: Mapped[list['Comment']] = relationship(back_populates="source", lazy="selectin",
                                                      cascade="all, delete-orphan")
+    tags: Mapped[list['Tag']] = relationship(back_populates="source", lazy="selectin",
+                                             cascade="all, delete-orphan")

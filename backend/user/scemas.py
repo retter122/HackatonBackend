@@ -18,6 +18,6 @@ class UserAuthtorize(UserBase):
 
 class UserRead(UserBase):
     id: int
-    
+
     name: str
     mail: str

@@ -3,7 +3,7 @@ import os
 
 
 def create_document(user_id: int) -> str:
-    path = f"{user_id}{dt.datetime.now()}.dat".replace(' ', '-')
+    path = f"{str(user_id)}{str(dt.datetime.now())}.dat".replace(' ', '_').replace(':', '.')
 
     open(f"local_save/{path}", 'w')
 
