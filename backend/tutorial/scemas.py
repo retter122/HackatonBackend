@@ -12,11 +12,13 @@ class TutorialCreate(TutorialBase):
 
 class TutorialRead(TutorialBase):
     id: int
+
     name: str
     description: str
 
 
 class TutorialEdit(TutorialBase):
     id: int
+
     name: str
     description: str

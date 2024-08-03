@@ -13,6 +13,7 @@ class ModuleCreate(ModuleBase):
 
 class ModuleRead(ModuleBase):
     id: int
+
     name: str
     description: str
     document: str
@@ -20,5 +21,6 @@ class ModuleRead(ModuleBase):
 
 class ModuleEdit(ModuleBase):
     id: int
+
     name: str
     description: str

@@ -10,12 +10,15 @@ class User(Base, CRUD):
     __tablename__ = 'user'
 
     id: Mapped[intpk]
+
     name: Mapped[str]
     password: Mapped[str]
     mail: Mapped[str]
 
     tutorials: Mapped[list['Tutorial']] = relationship(back_populates='creator', lazy='selectin',
                                                        cascade='all, delete-orphan')
+    comments: Mapped[list['Comment']] = relationship(back_populates='creator', lazy='selectin',
+                                                     cascade='all, delete-orphan')
 
     @classmethod
     def get_by_mail(cls, mail: str):

@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from ..tutorial.scemas import TutorialRead
 
 
 class UserBase(BaseModel):
@@ -19,7 +18,6 @@ class UserAuthtorize(UserBase):
 
 class UserRead(UserBase):
     id: int
+    
     name: str
     mail: str
-
-    tutorials: list[TutorialRead]

@@ -3,10 +3,12 @@ import base64
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, HTTPException, Depends
 
-from .scemas import UserRegister, UserAuthtorize, UserRead
+from .scemas import UserRegister, UserAuthtorize
 from .models import User
-from ..db.depencies import get_session
 from .auth import get_current_user
+from .relscemas import UserRel
+
+from ..db.depencies import get_session
 
 router = APIRouter(prefix="/user", tags=["user"])
 
@@ -41,5 +43,5 @@ async def login_user(user_log: UserAuthtorize, session: AsyncSession = Depends(g
 
 
 @router.get("/")
-async def get_user(user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)) -> UserRead:
-    return UserRead.model_validate(user, from_attributes=True)
+async def get_user(user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)) -> UserRel:
+    return UserRel.model_validate(user, from_attributes=True)
