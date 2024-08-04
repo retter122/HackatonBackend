@@ -17,6 +17,7 @@ class UserAuthtorize(UserBase):
 
 
 class UserEdit(UserBase):
+    name: str
     description: str
 
 
