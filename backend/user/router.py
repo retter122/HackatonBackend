@@ -47,6 +47,7 @@ async def add_descrtiption(user_edit: UserEdit, user: User = Depends(get_current
                            session: AsyncSession = Depends(get_session)) -> UserRead:
     try:
         user.description = user_edit.description
+        user.name = user_edit.name
 
         await session.commit()
     except Exception as e:
